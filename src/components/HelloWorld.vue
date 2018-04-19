@@ -33,8 +33,6 @@
                             <div class="reca"></div>
                         </div>
                         <div class="container-fluid box_title"  v-for="n in showgoods">
-
-
                             <component :is="n"></component>
 
                         </div>
@@ -117,16 +115,17 @@
             title_:title_,
         },
         methods: {
-            msg_type: function () {
-                let box_type = document.querySelector('.box_type');
-                box_type.innerHTML = this.goods_type;
-            },
-            title_type: function () {
-                let box_type = document.querySelector('.box_type');
-                box_type.innerHTML = this.title_type_;
-            },
+            // msg_type: function () {
+            //     let box_type = document.querySelector('.box_type');
+            //     box_type.innerHTML = this.goods_type;
+            // },
+            // title_type: function () {
+            //     let box_type = document.querySelector('.box_type');
+            //     box_type.innerHTML = this.title_type_;
+            // },
             typeclick: function (id) {
-                this.show++;
+                this.$emit('goods');
+                // this.show++;
                 if (id == 1) {
                     this.proclick();
                 }
@@ -136,6 +135,23 @@
             },
             proclick: function () {
                 this.showgoods.push('goods');
+                ['xxx','']
+                var model = {
+                    'prodcut' : {
+                        style : {
+                            card:'',
+                            ...
+                        },
+                        product:['xx','x']
+
+                    },
+                    'ad':{
+                        xxx
+                    },
+                    'title':{
+
+                    }
+                }
                 // let box_title = document.querySelector('.box_title');
                 // box_title.innerHTML += this.goods;
             },
@@ -147,80 +163,80 @@
             con: function () {
                 let box_title = document.querySelector('.box_title');
             },
-            //隐藏状态框
-            bootest: function (id) {
-                let that=this;
-                this.productlist.forEach(item => {
-                    if (item.id==id){
-                        console.log('that.proindexid',that.proindexid)
-                        that.virproduct[that.proindexid].name="sdasdasd";
-                    }
-                })
-                $('.modal').modal('hide')
-            //    此时选择了商品,关闭了选择框,data中记录了选择模板的索引
-
-            },
-
-            clonetest:function () {
-                $('.modal').modal('show')
-            },
+            // //隐藏状态框
+            // bootest: function (id) {
+            //     let that=this;
+            //     this.productlist.forEach(item => {
+            //         if (item.id==id){
+            //             console.log('that.proindexid',that.proindexid)
+            //             that.virproduct[that.proindexid].name="sdasdasd";
+            //         }
+            //     })
+            //     $('.modal').modal('hide')
+            // //    此时选择了商品,关闭了选择框,data中记录了选择模板的索引
+            //
+            // },
+            //
+            // clonetest:function () {
+            //     $('.modal').modal('show')
+            // },
         },
-        watch: {
-            show: function () {
-                let me = this;
-                let type = document.querySelectorAll('.boxdele');
-                type.forEach(item => {
-                    item.addEventListener('mouseover', function () {
-                        let su = item.querySelector('.su');
-                        su.style.display = 'block';
-                        //点击删除
-                        su.addEventListener('click', function () {
-                            let suu = su.parentNode;
-                            suu.parentNode.removeChild(suu);
-                        })
-                    })
-
-                    //鼠标移出,隐藏删除
-                    item.addEventListener('mouseout', function () {
-                        let su = item.querySelector('.su');
-                        su.style.display = 'none';
-                    })
-
-                    //点击单个模板,显示出模板配置详情
-                    item.addEventListener('click', function () {
-                        let id = item.id;
-                        if (id == 1) {
-                            me.msg_type();
-                        }
-                        if (id == 2) {
-                            me.title_type();
-                        }
-                    })
-
-
-                    //    判断是哪个类型,模块内的内容实行不同的操作
-                    if (item.id == 1) {
-                        //    如果是商品,那么迭代这个商品数组
-                        let pro_box = item.querySelectorAll('.pro_box');
-                        pro_box.forEach(ban => {
-                            ban.addEventListener('click', function () {
-                                console.log('ban.id',ban.id)
-                                me.proindexid=ban.id;
-                                axios.get(`https://api4.yx8.tv/Commodity/list`).then(function (res) {
-                                    let data = res.data.items;
-                                    data.forEach(e => {
-                                        e.image = `https://mp4.yx8.tv${e.image}`
-                                    })
-                                    me.productlist = data;
-                                    //商品请求完毕以后启动商品选择框
-                                    me.clonetest();
-                                })
-                            })
-                        })
-                    }
-                })
-            }
-        },
+        // watch: {
+        //     show: function () {
+        //         let me = this;
+        //         let type = document.querySelectorAll('.boxdele');
+        //         type.forEach(item => {
+        //             item.addEventListener('mouseover', function () {
+        //                 let su = item.querySelector('.su');
+        //                 su.style.display = 'block';
+        //                 //点击删除
+        //                 su.addEventListener('click', function () {
+        //                     let suu = su.parentNode;
+        //                     suu.parentNode.removeChild(suu);
+        //                 })
+        //             })
+        //
+        //             //鼠标移出,隐藏删除
+        //             item.addEventListener('mouseout', function () {
+        //                 let su = item.querySelector('.su');
+        //                 su.style.display = 'none';
+        //             })
+        //
+        //             //点击单个模板,显示出模板配置详情
+        //             item.addEventListener('click', function () {
+        //                 let id = item.id;
+        //                 if (id == 1) {
+        //                     me.msg_type();
+        //                 }
+        //                 if (id == 2) {
+        //                     me.title_type();
+        //                 }
+        //             })
+        //
+        //
+        //             //    判断是哪个类型,模块内的内容实行不同的操作
+        //             if (item.id == 1) {
+        //                 //    如果是商品,那么迭代这个商品数组
+        //                 let pro_box = item.querySelectorAll('.pro_box');
+        //                 pro_box.forEach(ban => {
+        //                     ban.addEventListener('click', function () {
+        //                         console.log('ban.id',ban.id)
+        //                         me.proindexid=ban.id;
+        //                         axios.get(`https://api4.yx8.tv/Commodity/list`).then(function (res) {
+        //                             let data = res.data.items;
+        //                             data.forEach(e => {
+        //                                 e.image = `https://mp4.yx8.tv${e.image}`
+        //                             })
+        //                             me.productlist = data;
+        //                             //商品请求完毕以后启动商品选择框
+        //                             me.clonetest();
+        //                         })
+        //                     })
+        //                 })
+        //             }
+        //         })
+        //     }
+        // },
         computed: {
             title_type_: function () {
                 return `

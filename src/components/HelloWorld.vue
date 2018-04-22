@@ -3,60 +3,44 @@
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    <button class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal
-                    </button>
-                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
-                         aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content" v-for="item in productlist">
-                                <div @click="bootest(item.id)">
-                                    <img class="seleimg" :src="item.image" alt="">
-                                    <span>{{item.name}}</span>
-                                    <span>{{item.price}}</span>
-                                    <span>{{item.symbol}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="box_">
                     <div class="box">
-                        <div class="header1">12:00 AM</div>
-                        <div class="header"><span class="hole3"></span><span class="hand"></span><span
-                                class="hole1"></span></div>
-                        <div class="header3"><i class="fa fa-signal icon"></i><i class="fa fa-wifi icon"></i><i
-                                class="fa fa-battery-full icon"></i></div>
-                        <div class="foot">
-                            <div class="reca"></div>
+                        <div class="container-fluid box_title"  v-for="(item ,n) in range">
+                            <div class="component-wrapper" @click="focusComponent(n)" :class="{'_focus':focusC == n}">
+                                <component :is="item.name" :index="n" :data="item.data" @changeData="changeData"></component>
+                                <div class="component-controls">
+                                    <div class="btn-item" @click.self="upRecord(n)">
+                                        Up
+                                    </div>
+                                    <div class="btn-item" @click.self="downRecord(n)">
+                                        Down
+                                    </div>
+                                    <div class="btn-item" @click.self="removeComponent(n)">
+                                        remove
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="container-fluid box_title"  v-for="n in showgoods">
-                            <component :is="n"></component>
-
-                        </div>
-
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="box_type">
-
                 </div>
-
-                <input type="text" v-model="virproduct[0].name">
                 <div class="box_type">
                     <div class="row">
                         <div class="col-md-2" v-for=" item in addtype">
-                            <div class="box_type2" @click="typeclick(item.id)">
+                            <div class="box_type2" @click="addComponent(item.component)">
                                 <i class="fa fa-plus"></i>
                                 {{item.title}}
                             </div>
                         </div>
                     </div>
                     <div class="btn_box">
-                        <button type="button" @click="con" class="btn btn-success">保存</button>
+                        <button type="button"  class="btn btn-success">保存</button>
                         <button type="button" class="btn btn-warning">保存并预览</button>
                     </div>
                 </div>
@@ -64,228 +48,7 @@
         </div>
     </div>
 </template>
-<script>
-    import axios from 'axios'
-    import $ from 'jquery'
-    import goods from './components-type/goods'
-    import title_ from './components-type/title'
 
-    export default {
-        name: 'HelloWorld',
-        data() {
-            return {
-                showgoods:[],
-                virproduct:
-                    [
-                        {image:`https://placekitten.com/g/200/200`, name:'进口牛油果1', price:12000, symbol:'$',},
-                        {image:`https://placekitten.com/g/200/200`, name:'进口牛油果2', price:12000, symbol:'$',},
-                        {image:`https://placekitten.com/g/200/200`, name:'进口牛油果3', price:12000, symbol:'$',},
-                        {image:`https://placekitten.com/g/200/200`, name:'进口牛油果4', price:12000, symbol:'$',},
-                    ],
-                //虚拟的展位商品
-                showgoods: [],
-                content: '',
-                title: '123',
-                addtype: [
-                    {id: 1, title: '页面设置', click: 'proclick'},
-                    {id: 2, title: '标题', click: "proclick"},
-                    {id: 3, title: '商品', click: "proclick"},
-                    {id: 4, title: '列表', click: "proclick"},
-                    {id: 5, title: '商品搜索', click: "proclick"},
-                    {id: 6, title: '图片导航', click: "proclick"},
-                    {id: 7, title: '图片广告', click: "proclick"},
-                    {id: 8, title: '富文本', click: "proclick"},
-                    {id: 9, title: '自定义模板', click: "proclick"},
-                    {id: 10, title: '商品列表', click: "proclick"},
-                    {id: 11, title: '文本导航', click: "proclick"},
-                    {id: 12, title: '分割线', click: "proclick"},
-                    {id: 13, title: '辅助', click: "proclick"},
-                    {id: 14, title: '空白', click: "proclick"},
-                    {id: 15, title: '顶部菜单', click: "proclick"},
-                    {id: 16, title: '橱窗', click: "proclick"},
-                ],
-                show: 0,
-                showlist: false,
-                productlist: [],
-                proindexid:null,
-            }
-        },
-        components: {
-            goods: goods,
-            title_:title_,
-        },
-        methods: {
-            // msg_type: function () {
-            //     let box_type = document.querySelector('.box_type');
-            //     box_type.innerHTML = this.goods_type;
-            // },
-            // title_type: function () {
-            //     let box_type = document.querySelector('.box_type');
-            //     box_type.innerHTML = this.title_type_;
-            // },
-            typeclick: function (id) {
-                this.$emit('goods');
-                // this.show++;
-                if (id == 1) {
-                    this.proclick();
-                }
-                if (id == 2) {
-                    this.titleclick()
-                }
-            },
-            proclick: function () {
-                this.showgoods.push('goods');
-                ['xxx','']
-                var model = {
-                    'prodcut' : {
-                        style : {
-                            card:'',
-                            ...
-                        },
-                        product:['xx','x']
-
-                    },
-                    'ad':{
-                        xxx
-                    },
-                    'title':{
-
-                    }
-                }
-                // let box_title = document.querySelector('.box_title');
-                // box_title.innerHTML += this.goods;
-            },
-            titleclick: function () {
-                this.showgoods.push('title_');
-                // let box_title = document.querySelector('.box_title');
-                // box_title.innerHTML += this.title_;
-            },
-            con: function () {
-                let box_title = document.querySelector('.box_title');
-            },
-            // //隐藏状态框
-            // bootest: function (id) {
-            //     let that=this;
-            //     this.productlist.forEach(item => {
-            //         if (item.id==id){
-            //             console.log('that.proindexid',that.proindexid)
-            //             that.virproduct[that.proindexid].name="sdasdasd";
-            //         }
-            //     })
-            //     $('.modal').modal('hide')
-            // //    此时选择了商品,关闭了选择框,data中记录了选择模板的索引
-            //
-            // },
-            //
-            // clonetest:function () {
-            //     $('.modal').modal('show')
-            // },
-        },
-        // watch: {
-        //     show: function () {
-        //         let me = this;
-        //         let type = document.querySelectorAll('.boxdele');
-        //         type.forEach(item => {
-        //             item.addEventListener('mouseover', function () {
-        //                 let su = item.querySelector('.su');
-        //                 su.style.display = 'block';
-        //                 //点击删除
-        //                 su.addEventListener('click', function () {
-        //                     let suu = su.parentNode;
-        //                     suu.parentNode.removeChild(suu);
-        //                 })
-        //             })
-        //
-        //             //鼠标移出,隐藏删除
-        //             item.addEventListener('mouseout', function () {
-        //                 let su = item.querySelector('.su');
-        //                 su.style.display = 'none';
-        //             })
-        //
-        //             //点击单个模板,显示出模板配置详情
-        //             item.addEventListener('click', function () {
-        //                 let id = item.id;
-        //                 if (id == 1) {
-        //                     me.msg_type();
-        //                 }
-        //                 if (id == 2) {
-        //                     me.title_type();
-        //                 }
-        //             })
-        //
-        //
-        //             //    判断是哪个类型,模块内的内容实行不同的操作
-        //             if (item.id == 1) {
-        //                 //    如果是商品,那么迭代这个商品数组
-        //                 let pro_box = item.querySelectorAll('.pro_box');
-        //                 pro_box.forEach(ban => {
-        //                     ban.addEventListener('click', function () {
-        //                         console.log('ban.id',ban.id)
-        //                         me.proindexid=ban.id;
-        //                         axios.get(`https://api4.yx8.tv/Commodity/list`).then(function (res) {
-        //                             let data = res.data.items;
-        //                             data.forEach(e => {
-        //                                 e.image = `https://mp4.yx8.tv${e.image}`
-        //                             })
-        //                             me.productlist = data;
-        //                             //商品请求完毕以后启动商品选择框
-        //                             me.clonetest();
-        //                         })
-        //                     })
-        //                 })
-        //             }
-        //         })
-        //     }
-        // },
-        computed: {
-            title_type_: function () {
-                return `
-                   <div class="row">
-                <div class="col-md-12">
-                这是一个标题信息框
-                </div>
-                </div>
-                `
-            },
-            goods_type: function () {
-                return `
-                <div class="row">
-                <div class="col-md-12">
-                这是一个商品信息框
-</div>
-                </div>
-                `
-            },
-            public: function () {
-                return `
-              <span class="dele">删除</span>
-              `
-            },
-            goods: function () {
-                //商品
-                return `
-<div class="row boxdele" id="1">
-      <div class="col-md-6"><div class="pro_box" id="0"><img src="${this.virproduct[0].image}" alt=""><div>${this.virproduct[0].name}</div><div>${this.virproduct[0].symbol}${this.virproduct[0].price}</div></div></div>
-      <div class="col-md-6"><div class="pro_box" id="1"><img src="${this.virproduct[1].image}" alt=""><div>${this.virproduct[1].name}</div><div>${this.virproduct[1].symbol}${this.virproduct[1].price}</div></div></div>
-      <div class="col-md-6"><div class="pro_box" id="2"><img src="${this.virproduct[2].image}" alt=""><div>${this.virproduct[2].name}</div><div>${this.virproduct[2].symbol}${this.virproduct[2].price}</div></div></div>
-      <div class="col-md-6"><div class="pro_box" id="3"><img src="${this.virproduct[3].image}" alt=""><div>${this.virproduct[3].name}</div><div>${this.virproduct[3].symbol}${this.virproduct[3].price}</div></div></div>
-      <div class="col-md-12 su">${this.public}</div>
-</div>
-      `
-            },
-            title_: function () {
-                return `
-<div class="row boxdele" id="2">
-<div class="col-md-12">${this.title}</div>
-<div class="col-md-12 su">${this.public}</div>
-</div>
-                `
-            }
-
-
-        }
-    }
-</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -295,8 +58,6 @@
         position: relative;
         width: 300px;
         height: 600px;
-        border-radius: 50px;
-        overflow: hidden;
         /*border: 10px solid rgba(0,0,0,0);*/
     }
 
@@ -304,11 +65,8 @@
         width: 300px;
         height: 600px;
         /*margin: 0 auto;*/
-        border: 10px solid black;
         /*margin-top: 50px;*/
-        border-radius: 50px;
         /*position: relative;*/
-        overflow: auto;
         padding-top: 33px;
     }
 
@@ -437,6 +195,45 @@
         height: 80px;
     }
 
+
+    .component-wrapper {
+        border:2px;
+        border-color:transparent;
+        position: relative;
+    }
+
+    .component-wrapper._focus {
+        border:2px dashed #27A343;
+    }
+
+    .component-wrapper .component-controls {
+        visibility: hidden;
+        position :absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+    .component-wrapper._focus .component-controls {
+        visibility:visible;
+    }
+
+    .component-wrapper._focus .component-controls .btn-item {
+        display: inline-block;
+        color:#f8f8f8;
+        font-size: 10px;
+        line-height: 18px;
+        padding-left: 10px;
+        padding-right: 10px;
+        background: rgba(0,0,0,.7);
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+
+    .component-wrapper._focus >>> .son {
+        visibility: visible;
+    }
+
 </style>
 
 <style>
@@ -469,3 +266,109 @@
     }
 
 </style>
+
+
+<script>
+    import axios from 'axios'
+    import $ from 'jquery'
+    import goods from './components-type/goods'
+    import title_ from './components-type/title'
+
+    export default {
+        name: 'HelloWorld',
+        data() {
+            return {
+                title: '123',
+                focusC:null,
+                componentTypes:{
+                    goods:{
+                        name:'goods',
+                        data:{
+                            style:{
+                                layout:1
+                            },
+                            content:[],
+                            priceShow:false,
+                            titleShow:false,
+                            cartShow:false
+                        },
+                    },
+                    title_:{
+                        name:'title_',
+                        data:{
+                            title:'',
+                            textAlign:'center',
+                            subtitle:''
+                        }
+                    }
+                },
+                range:[],
+                addtype: [
+                    {id: 1, title: '页面设置', component: 'goods'},
+                    {id: 2, title: '标题', component: "title_"},
+                    {id: 3, title: '商品', component: "goods"},
+                    {id: 4, title: '列表', component: "goods"},
+                    {id: 5, title: '商品搜索', component: "goods"},
+                    {id: 6, title: '图片导航', component: "goods"},
+                    {id: 7, title: '图片广告', component: "goods"},
+                    {id: 8, title: '富文本', component: "goods"},
+                    {id: 9, title: '自定义模板', component: "goods"},
+                    {id: 10, title: '商品列表', component: "goods"},
+                    {id: 11, title: '文本导航', component: "goods"},
+                    {id: 12, title: '分割线', component: "goods"},
+                    {id: 13, title: '辅助', component: "goods"},
+                    {id: 14, title: '空白', component: "goods"},
+                    {id: 15, title: '顶部菜单', component: "goods"},
+                    {id: 16, title: '橱窗', component: "goods"},
+                ],
+            }
+        },
+        components: {
+            goods,
+            title_
+        },
+        methods: {
+            newObj(obj) {
+                return JSON.parse(JSON.stringify(obj));
+
+            },
+            addComponent(name) {
+                this.range.push(this.newObj(this.componentTypes[name]));
+                this.focusC = this.range.length - 1;
+            },
+            removeComponent(index) {
+                return this.range.splice(index,1);
+            },
+            recordComponent(index, nIndex) {
+                let _cache = this.removeComponent(index)[0];
+                this.range.splice(nIndex,0,_cache);
+                console.log(this.focusC);
+                this.focusC = nIndex;
+                console.log(this.focusC);
+            },
+            upRecord(index) {
+                if(index == 0)
+                    return ;
+                this.recordComponent(index , index - 1);
+            },
+            downRecord(index) {
+                if(index == this.range.length - 1 )
+                    return ;
+
+                this.recordComponent(index , index + 1);
+            },
+            changeData(index,data) {
+                console.log(index,data);
+                this.range[index].data = data;
+            },
+            focusComponent(index) {
+                this.focusC = index;
+            }
+        },
+        computed: {
+
+
+
+        }
+    }
+</script>
